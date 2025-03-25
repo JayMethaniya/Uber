@@ -4,12 +4,24 @@ import { Link } from "react-router-dom";
 const Index: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [userData, setUserData] = useState<{ email?: string; password?: string }>({});
+  function submitHandler(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const data = { 
+      email: email,
+      password: password 
+    };
+    setUserData(data);
+    console.log(data);
+    setEmail("");
+    setPassword("");
+  }
 
   return (
     <div className="p-7 h-screen flex flex-col justify-between ">
       <div>
         <img src={logo} alt="logo" className="w-24 mb-3" />
-        <form>
+        <form onSubmit={(e) => submitHandler(e)}>
           <h3 className="text-lg font-medium mb-2">What's your email</h3>
           <input
             type="email"
@@ -43,7 +55,7 @@ const Index: React.FC = () => {
         </form>
       </div>
       <div className="w-full bg-[#10b461] text-white font-semibold  py-3 rounded mb-6 flex justify-center items-center px-4">
-        <Link to="/captain-signup">SignIn as Captain</Link>
+        <Link to="/captain-login">SignIn as Captain</Link>
       </div>
     </div>
   );
