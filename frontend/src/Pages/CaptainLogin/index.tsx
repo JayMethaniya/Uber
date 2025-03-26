@@ -1,21 +1,64 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/uber_driver-removebg-preview.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+interface LoginResponse {
+  captain: {
+    email: string;
+    fullName: {
+      firstName: string;
+      lastName: string;
+    };
+    vehicle: {
+      color: string;
+      plate: string;
+      vehicleType: string;
+      capacity: number;
+    };
+  };
+  token: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 const Index: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [CaptainData, setCaptainData] = useState<{ email?: string; password?: string }>({});
-  function submitHandler(e: React.FormEvent<HTMLFormElement>) {
+  const navigate = useNavigate();
+
+  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = { 
-      email: email,
-      password: password 
-    };
-    setCaptainData(data);
-    console.log(data);
-    setEmail("");
-    setPassword("");
-  }
+    try {
+      const data: LoginData = { 
+        email: email,
+        password: password 
+      };
+      
+      const response = await axios.post<LoginResponse>(
+        "http://localhost:4000/captains/login", 
+        data
+      );
+      
+      if (response.status === 200) {
+        const { captain, token } = response.data;
+        localStorage.setItem('user', JSON.stringify(captain));
+        localStorage.setItem('token', token);
+        setEmail("");
+        setPassword("");
+        navigate("/captain/home");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error('Login failed:', error.response?.data || error.message);
+      } else {
+        console.error('Login failed:', error);
+      }
+    }
+  };
 
   return (
     <div className="p-7 h-screen flex flex-col justify-between ">

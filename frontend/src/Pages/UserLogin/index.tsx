@@ -1,20 +1,58 @@
 import React, { useState } from "react";
 import logo from "../../assets/images/Uber_Logo_Black_RGB.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+
+interface LoginResponse {
+  user: {
+    email: string;
+    password: string;
+    fullName: {
+      firstName: string;
+      lastName: string;
+    };
+  };
+  token: string;
+}
+
+interface LoginData {
+  email: string;
+  password: string;
+}
+
 const Index: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [userData, setUserData] = useState<{ email?: string; password?: string }>({});
-  function submitHandler(e: React.FormEvent<HTMLFormElement>) {
+  const navigate = useNavigate();
+
+  async function submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = { 
-      email: email,
-      password: password 
-    };
-    setUserData(data);
-    console.log(data);
-    setEmail("");
-    setPassword("");
+    try {
+      const data: LoginData = { 
+        email: email,
+        password: password 
+      };
+      
+      const response = await axios.post<LoginResponse>(
+        "http://localhost:4000/users/login", 
+        data
+      );
+      
+      if (response.status === 200) {
+        const { user, token } = response.data;
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('token', token);
+        setEmail("");
+        setPassword("");
+        navigate("/user/home");
+      }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error('Login failed:', error.response?.data || error.message);
+      } else {
+        console.error('Login failed:', error);
+      }
+    }
   }
 
   return (

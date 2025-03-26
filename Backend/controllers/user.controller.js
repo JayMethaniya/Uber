@@ -21,7 +21,7 @@ module.exports.registerUser = async (req, res) => {
     email,
     password: hashedPassword,
   });
-  const token = await userModel.generateAuthToken(user);
+  const token = await user.generateAuthToken(user);
   res.status(201).json({ user, token });
 };
 
@@ -38,7 +38,7 @@ module.exports.loginUser = async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  const comparePassword = await userModel.comparePassword(
+  const comparePassword = await user.comparePassword(
     password,
     user.password
   );
