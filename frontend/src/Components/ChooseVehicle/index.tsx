@@ -2,11 +2,12 @@ import { User, ChevronDown } from "lucide-react";
 import React, { forwardRef, useState } from "react";
 
 interface Props {
+  setConfirmedRidePanelOpen:React.Dispatch<React.SetStateAction<boolean>>;
   vehiclePanelOpen: boolean;
   setVehiclePanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Index =(({ vehiclePanelOpen, setVehiclePanelOpen }:Props) => {
+const Index =(({setConfirmedRidePanelOpen, vehiclePanelOpen, setVehiclePanelOpen }:Props) => {
   const [selectedRide, setSelectedRide] = useState<number | null>(null);
 
   return (
@@ -31,7 +32,11 @@ const Index =(({ vehiclePanelOpen, setVehiclePanelOpen }:Props) => {
           className={`p-4 flex items-center h-28 justify-between border ${
             selectedRide === ride.id ? "border-black border-4" : "border-none"
           } rounded-xl cursor-pointer `}
-          onClick={() => setSelectedRide(ride.id)}
+          onClick={() => {
+            setSelectedRide(ride.id);
+            setConfirmedRidePanelOpen(true);
+            setVehiclePanelOpen(false);
+          }}
         >
           <div className="flex items-center space-x-4">
             <img className="w-20" src={ride.icon} alt={ride.type} />

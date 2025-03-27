@@ -5,14 +5,18 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import LocationSearchPanel from "../../Components/LocationSearchPanel/index";
 import ChooseVehicle from "../../Components/ChooseVehicle/index";
+import ConfirmedRide from "../../Components/ConfirmedRide/index"
+import RideInfo from "../../Pages/RideInfo/index"
 
 export default function UberUI() {
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
   const [panelOpen, setPanelOpen] = useState(false);
   const [vehiclePanelOpen, setVehiclePanelOpen] = useState(false);
+  const [confirmedRidePanelOpen, setConfirmedRidePanelOpen] = useState(false);
   const panelRef = useRef(null);
   const vehiclePanelRef = useRef<HTMLDivElement>(null);
+  const confirmedRideRef = useRef<HTMLDivElement>(null)
 
   const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,6 +53,20 @@ export default function UberUI() {
       }
     },
     [vehiclePanelOpen]
+  );
+  useGSAP(
+    function () {
+      if (confirmedRidePanelOpen) {
+        gsap.to(confirmedRideRef.current, {
+          transform: "translateY(0)",
+        });
+      } else {
+        gsap.to(confirmedRideRef.current, {
+          transform: "translateY(100%)",
+        });
+      }
+    },
+    [confirmedRidePanelOpen]
   );
   return (
     <div className="relative h-screen w-full">
@@ -107,12 +125,22 @@ export default function UberUI() {
             setVehiclePanelOpen={setVehiclePanelOpen}
           />
         </div>
-        <div  ref={vehiclePanelRef} className={`bg-white overflow-hidden fixed  `}>
+        <div  ref={vehiclePanelRef}  className="bg-white overflow-hidden fixed  rounded-t-xl ">
           <ChooseVehicle
-          
+           setConfirmedRidePanelOpen={setConfirmedRidePanelOpen}
            vehiclePanelOpen={vehiclePanelOpen}
            setVehiclePanelOpen={setVehiclePanelOpen}
             />
+        </div>
+        <div  ref={confirmedRideRef} className="bg-white w-full overflow-hidden fixed  rounded-t-xl ">
+          <ConfirmedRide
+          setVehiclePanelOpen={setVehiclePanelOpen}
+          confirmedRidePanelOpen={confirmedRidePanelOpen}
+          setConfirmedRidePanelOpen={setConfirmedRidePanelOpen}
+            />
+        </div>
+        <div  className="bg-white w-full overflow-hidden fixed  rounded-t-xl ">
+          <RideInfo/>
         </div>
       </div>
     </div>
