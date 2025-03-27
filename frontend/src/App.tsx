@@ -11,6 +11,8 @@ import UserLogout from "./Pages/UserLogout/index";
 import CaptainHome from "./Pages/CaptainHome/index";
 import CaptainLogout from "./Pages/CaptainLogout/index";
 import CaptainProtectedWrapper from "./Pages/CaptainProtectedWrapper";
+import UserDetails from "./Components/UserDetails/index"
+import PickUp from "./Pages/PickUp/index"
 
 // Separate public and protected routes for better organization
 const publicRoutes = [
@@ -37,6 +39,14 @@ const protectedRoutes = [
   { 
     path: "/captain/logout", 
     element: <CaptainProtectedWrapper><CaptainLogout /></CaptainProtectedWrapper> 
+  },
+  { 
+    path: "/captain/user-details", 
+    element: <CaptainProtectedWrapper><UserDetails /></CaptainProtectedWrapper> 
+  },
+  { 
+    path: "/captain/pick-up", 
+    element: <CaptainProtectedWrapper><PickUp /></CaptainProtectedWrapper> 
   },
 ];
 
